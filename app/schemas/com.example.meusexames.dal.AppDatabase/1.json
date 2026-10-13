@@ -1,0 +1,83 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "8c1a85076a77628e2f23e59bb957ce17",
+    "entities": [
+      {
+        "tableName": "exames",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `titulo` TEXT NOT NULL, `descricao` TEXT, `data_exame` TEXT NOT NULL, `caminho_arquivo` TEXT NOT NULL, `tipo_arquivo` TEXT NOT NULL, `houve_alteracao` INTEGER NOT NULL, `data_cadastro` INTEGER NOT NULL, `data_alteracao` INTEGER NOT NULL, `comentario` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "titulo",
+            "columnName": "titulo",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "descricao",
+            "columnName": "descricao",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "dataExame",
+            "columnName": "data_exame",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "caminhoArquivo",
+            "columnName": "caminho_arquivo",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tipoArquivo",
+            "columnName": "tipo_arquivo",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "houveAlteracao",
+            "columnName": "houve_alteracao",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dataCadastro",
+            "columnName": "data_cadastro",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dataAlteracao",
+            "columnName": "data_alteracao",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "comentario",
+            "columnName": "comentario",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8c1a85076a77628e2f23e59bb957ce17')"
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+package com.example.meusexames.bll
+
+enum class ErroCadastro {
+    TITULO_INVALIDO,
+    DESCRICAO_INVALIDA,
+    DATA_OBRIGATORIA,
+    ARQUIVO_OBRIGATORIO,
+    TIPO_ARQUIVO_INVALIDO,
+    COMENTARIO_INVALIDO,
+    EXAME_NAO_ENCONTRADO,
+    FALHA_AO_SALVAR,
+}

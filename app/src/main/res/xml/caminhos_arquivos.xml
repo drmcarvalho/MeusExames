@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Pastas que o FileProvider do manifesto pode expor para outros apps abrirem um arquivo. -->
+<paths>
+    <!-- A pasta em que ArmazenamentoArquivos grava as cópias dos arquivos dos exames. -->
+    <files-path
+        name="exames"
+        path="exames/" />
+</paths>

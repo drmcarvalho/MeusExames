@@ -1,0 +1,52 @@
+<resources>
+    <string name="app_name">MeusExames</string>
+    <string name="titulo_lista_exames">Lista de exames</string>
+    <string name="editar">Editar</string>
+    <string name="apagar">Apagar</string>
+    <string name="compartilhar">Compartilhar</string>
+    <string name="modelo_compartilhar_exame">Exame: %1$s\nData do exame: %2$s</string>
+    <string name="cadastrar_exame">Cadastrar exame</string>
+    <string name="titulo_cadastro_exame">Cadastro de exame</string>
+    <string name="titulo_edicao_exame">Edição de exame</string>
+    <string name="titulo_exame">Título do exame</string>
+    <string name="descricao_exame">Descrição (opcional)</string>
+    <string name="descricao_exame_formatada">Descrição %1$s</string>
+    <string name="data_exame">Data do exame</string>
+    <string name="data_exame_formatada">Data do exame %1$s</string>
+    <string name="selecionar_data">Selecionar data</string>
+    <string name="arquivo_exame">Arquivo</string>
+    <string name="tipo_arquivo">Tipo do arquivo</string>
+    <string name="tipo_arquivo_pdf">PDF</string>
+    <string name="tipo_arquivo_imagem">Imagem</string>
+    <string name="tipo_arquivo_doc">DOC</string>
+    <string name="selecionar_arquivo">Selecionar arquivo</string>
+    <string name="abrir_arquivo">Abrir arquivo</string>
+    <string name="houve_alteracao">Houve alteração no exame?</string>
+    <string name="houve_alteracao_formatada">Houve alteração %1$s</string>
+    <string name="sim">Sim</string>
+    <string name="nao">Não</string>
+    <string name="comentario">Comentário (opcional)</string>
+    <string name="salvar">Salvar</string>
+    <string name="cancelar">Cancelar</string>
+    <plurals name="erro_titulo">
+        <item quantity="one">O título deve ter entre %1$d e %2$d caractere.</item>
+        <item quantity="other">O título deve ter entre %1$d e %2$d caracteres.</item>
+    </plurals>
+    <plurals name="erro_descricao">
+        <item quantity="one">A descrição deve ter entre %1$d e %2$d caractere.</item>
+        <item quantity="other">A descrição deve ter entre %1$d e %2$d caracteres.</item>
+    </plurals>
+    <string name="erro_data_exame">Informe a data do exame.</string>
+    <string name="erro_arquivo">Selecione o arquivo do exame.</string>
+    <string name="erro_tipo_arquivo">O arquivo deve ser PDF, imagem ou DOC.</string>
+    <plurals name="erro_comentario">
+        <item quantity="one">O comentário deve ter entre %1$d e %2$d caractere.</item>
+        <item quantity="other">O comentário deve ter entre %1$d e %2$d caracteres.</item>
+    </plurals>
+    <string name="erro_salvar">Não foi possível salvar o exame. Tente novamente.</string>
+    <string name="erro_exame_nao_encontrado">Exame não encontrado.</string>
+    <string name="erro_abrir_arquivo">Nenhum app instalado abre este tipo de arquivo.</string>
+    <string name="titulo_apagar_exame">Apagar exame?</string>
+    <string name="mensagem_apagar_exame">O exame “%1$s” e o arquivo dele serão apagados. Essa ação não pode ser desfeita.</string>
+    <string name="erro_apagar">Não foi possível apagar o exame. Tente novamente.</string>
+</resources>
