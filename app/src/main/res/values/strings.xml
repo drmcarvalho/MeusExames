@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">MeusExames</string>
     <string name="titulo_lista_exames">Lista de exames</string>
+    <string name="pesquisar_exame">Pesquisar exame</string>
+    <string name="pesquisar">Pesquisar</string>
     <string name="editar">Editar</string>
     <string name="apagar">Apagar</string>
     <string name="compartilhar">Compartilhar</string>

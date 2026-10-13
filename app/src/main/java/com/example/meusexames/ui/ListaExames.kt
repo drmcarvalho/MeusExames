@@ -4,18 +4,23 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -26,9 +31,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.meusexames.R
@@ -45,6 +53,7 @@ private const val LIMITE_DESCRICAO_NO_CARD = 20
 @Composable
 fun ListaExames(
     exames: List<Exame>,
+    aoPesquisar: (String) -> Unit,
     aoCadastrar: () -> Unit,
     aoEditar: (Exame) -> Unit,
     aoApagar: (Exame) -> Unit,
@@ -68,21 +77,37 @@ fun ListaExames(
             }
         },
     ) { innerPadding ->
-        LazyColumn(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
-            contentPadding = PaddingValues(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 88.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            items(exames, key = { it.id }) { exame ->
-                ExameCard(
-                    exame,
-                    formatoData,
-                    aoEditar = { aoEditar(exame) },
-                    aoApagar = { idExameParaApagar = exame.id },
-                    aoCompartilhar = { aoCompartilhar(exame) },
-                )
+            // O campo fica fora da lista para continuar à vista quando ela rola.
+            CampoDePesquisa(
+                aoPesquisar = aoPesquisar,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            )
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                contentPadding = PaddingValues(
+                    start = 16.dp,
+                    top = 8.dp,
+                    end = 16.dp,
+                    bottom = 88.dp,
+                ),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                items(exames, key = { it.id }) { exame ->
+                    ExameCard(
+                        exame,
+                        formatoData,
+                        aoEditar = { aoEditar(exame) },
+                        aoApagar = { idExameParaApagar = exame.id },
+                        aoCompartilhar = { aoCompartilhar(exame) },
+                    )
+                }
             }
         }
     }
@@ -96,6 +121,40 @@ fun ListaExames(
             },
             aoFechar = { idExameParaApagar = null },
         )
+    }
+}
+
+@Composable
+private fun CampoDePesquisa(aoPesquisar: (String) -> Unit, modifier: Modifier = Modifier) {
+    var termo by rememberSaveable { mutableStateOf("") }
+    val foco = LocalFocusManager.current
+    val pesquisar = {
+        // Sem o foco no campo o teclado se fecha e deixa de cobrir o resultado da pesquisa.
+        foco.clearFocus()
+        aoPesquisar(termo)
+    }
+
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        OutlinedTextField(
+            value = termo,
+            onValueChange = { termo = it },
+            modifier = Modifier.weight(1f),
+            placeholder = { Text(stringResource(R.string.pesquisar_exame)) },
+            // A tecla de pesquisa do teclado faz o mesmo que o botão ao lado do campo.
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+            keyboardActions = KeyboardActions(onSearch = { pesquisar() }),
+            singleLine = true,
+        )
+        FilledTonalIconButton(onClick = pesquisar) {
+            Icon(
+                painter = painterResource(R.drawable.ic_pesquisar),
+                contentDescription = stringResource(R.string.pesquisar),
+            )
+        }
     }
 }
 
@@ -193,6 +252,7 @@ private fun ListaExamesPreview() {
                 ),
                 exameDeExemplo(id = 2, titulo = "Eletro"),
             ),
+            aoPesquisar = {},
             aoCadastrar = {},
             aoEditar = {},
             aoApagar = {},

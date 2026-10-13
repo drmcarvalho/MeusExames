@@ -160,6 +160,26 @@ class ExameBllTest {
     }
 
     @Test
+    fun pesquisarDevolveSoOsExamesQueTemOTermo() = runBlocking {
+        val hemograma = cadastrado(dados(titulo = "Hemograma completo"))
+        assertNull(bll.cadastrar(dados(titulo = "Eletro")))
+
+        assertEquals(listOf(hemograma), bll.pesquisar("hemograma").first())
+        // Sem termo nenhum exame fica de fora.
+        assertEquals(gravados(), bll.pesquisar("").first())
+    }
+
+    @Test
+    fun pesquisarIgnoraEspacosNasPontasDoTermo() = runBlocking {
+        val hemograma = cadastrado(dados(titulo = "Hemograma completo"))
+        assertNull(bll.cadastrar(dados(titulo = "Eletro")))
+
+        assertEquals(listOf(hemograma), bll.pesquisar("  hemograma completo \n").first())
+        // Um termo só de espaços é o mesmo que nenhum termo.
+        assertEquals(gravados(), bll.pesquisar("   ").first())
+    }
+
+    @Test
     fun buscarPorIdDevolveOExameGravado() = runBlocking {
         val exame = cadastrado(dados())
 

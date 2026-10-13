@@ -32,6 +32,8 @@ class ExameBll(
 
     fun listar(): Flow<List<Exame>> = exameDao.listar()
 
+    fun pesquisar(termo: String): Flow<List<Exame>> = exameDao.pesquisar(termo.trim())
+
     suspend fun buscarPorId(id: Long): Exame? = exameDao.buscarPorId(id)
 
     suspend fun identificarArquivo(arquivo: Uri): ArquivoSelecionado =
@@ -93,7 +95,7 @@ class ExameBll(
         return withContext(NonCancellable) {
             val caminhoArquivo = try {
                 arquivos.copiar(arquivo)
-            } catch (e: IOException) {
+            } catch (_: IOException) {
                 return@withContext ErroCadastro.FALHA_AO_SALVAR
             }
             try {
@@ -109,7 +111,7 @@ class ExameBll(
                     )
                 )
                 null
-            } catch (e: SQLException) {
+            } catch (_: SQLException) {
                 arquivos.excluir(caminhoArquivo)
                 ErroCadastro.FALHA_AO_SALVAR
             }
@@ -147,7 +149,7 @@ class ExameBll(
         return withContext(NonCancellable) {
             val caminhoNovoArquivo = try {
                 novoArquivo?.let { arquivos.copiar(it) }
-            } catch (e: IOException) {
+            } catch (_: IOException) {
                 return@withContext ErroCadastro.FALHA_AO_SALVAR
             }
             val erro = try {
@@ -163,7 +165,7 @@ class ExameBll(
                     )
                 )
                 if (linhas > 0) null else ErroCadastro.EXAME_NAO_ENCONTRADO
-            } catch (e: SQLException) {
+            } catch (_: SQLException) {
                 ErroCadastro.FALHA_AO_SALVAR
             }
             // Dos dois arquivos só fica o que o exame usa: o novo, ou o original quando a
@@ -185,7 +187,7 @@ class ExameBll(
         withContext(NonCancellable) {
             try {
                 exameDao.excluir(exame)
-            } catch (e: SQLException) {
+            } catch (_: SQLException) {
                 return@withContext false
             }
             // O arquivo só sai depois do exame: se a exclusão falhar, o exame continua com ele.

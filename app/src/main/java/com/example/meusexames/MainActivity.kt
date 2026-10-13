@@ -9,6 +9,10 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.lifecycleScope
 import com.example.meusexames.bll.ExameBll
 import com.example.meusexames.dal.models.Exame
@@ -24,12 +28,17 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val fluxoExames = exameBll.listar()
         setContent {
             MeusExamesTheme {
+                // O termo da última pesquisa feita. Antes dela a lista mostra todos os exames.
+                var termoPesquisado by rememberSaveable { mutableStateOf<String?>(null) }
+                val fluxoExames = remember(termoPesquisado) {
+                    termoPesquisado?.let(exameBll::pesquisar) ?: exameBll.listar()
+                }
                 val exames by fluxoExames.collectAsState(initial = emptyList())
                 ListaExames(
                     exames = exames,
+                    aoPesquisar = { termoPesquisado = it },
                     aoCadastrar = {
                         startActivity(Intent(this, CadastroExameActivity::class.java))
                     },

@@ -4,6 +4,7 @@ import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.getUnclippedBoundsInRoot
 import androidx.compose.ui.test.hasAnyAncestor
+import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isDialog
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -11,6 +12,8 @@ import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performImeAction
+import androidx.compose.ui.test.performTextInput
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.meusexames.R
@@ -139,6 +142,60 @@ class ListaExamesTest {
     }
 
     @Test
+    fun exibeCampoDePesquisaAcimaDaListaComOBotaoADireitaDele() {
+        exibir(listOf(novoExame(id = 1, titulo = "Hemograma")))
+
+        val campo = composeRule.onNodeWithText(context.getString(R.string.pesquisar_exame))
+            .assertIsDisplayed()
+            .getUnclippedBoundsInRoot()
+        val botao = composeRule.onNodeWithContentDescription(context.getString(R.string.pesquisar))
+            .assertIsDisplayed()
+            .getUnclippedBoundsInRoot()
+        val exame = composeRule.onNodeWithText("Hemograma").getUnclippedBoundsInRoot()
+        assertTrue(botao.left >= campo.right)
+        assertTrue(exame.top >= campo.bottom)
+    }
+
+    @Test
+    fun botaoDePesquisarChamaAoPesquisarComOTermoDigitado() {
+        val pesquisados = mutableListOf<String>()
+        exibir(emptyList(), aoPesquisar = { pesquisados += it })
+
+        composeRule.onNodeWithText(context.getString(R.string.pesquisar_exame))
+            .performTextInput("hemograma")
+        // Digitar não pesquisa: a pesquisa só sai quando o botão é tocado.
+        assertTrue(pesquisados.isEmpty())
+        composeRule.onNodeWithContentDescription(context.getString(R.string.pesquisar))
+            .performClick()
+
+        assertEquals(listOf("hemograma"), pesquisados)
+    }
+
+    @Test
+    fun botaoDePesquisarComOCampoVazioChamaAoPesquisarSemTermo() {
+        val pesquisados = mutableListOf<String>()
+        exibir(emptyList(), aoPesquisar = { pesquisados += it })
+
+        composeRule.onNodeWithContentDescription(context.getString(R.string.pesquisar))
+            .performClick()
+
+        assertEquals(listOf(""), pesquisados)
+    }
+
+    @Test
+    fun teclaDePesquisaDoTecladoChamaAoPesquisarComOTermoDigitado() {
+        val pesquisados = mutableListOf<String>()
+        exibir(emptyList(), aoPesquisar = { pesquisados += it })
+
+        // Com o termo digitado o campo deixa de mostrar o texto que o identificava.
+        val campo = composeRule.onNode(hasSetTextAction())
+        campo.performTextInput("eletro")
+        campo.performImeAction()
+
+        assertEquals(listOf("eletro"), pesquisados)
+    }
+
+    @Test
     fun botaoDeCadastrarChamaAoCadastrar() {
         var cadastros = 0
         exibir(emptyList(), aoCadastrar = { cadastros++ })
@@ -217,6 +274,7 @@ class ListaExamesTest {
 
     private fun exibir(
         exames: List<Exame>,
+        aoPesquisar: (String) -> Unit = {},
         aoCadastrar: () -> Unit = {},
         aoEditar: (Exame) -> Unit = {},
         aoApagar: (Exame) -> Unit = {},
@@ -226,6 +284,7 @@ class ListaExamesTest {
             MeusExamesTheme {
                 ListaExames(
                     exames = exames,
+                    aoPesquisar = aoPesquisar,
                     aoCadastrar = aoCadastrar,
                     aoEditar = aoEditar,
                     aoApagar = aoApagar,
