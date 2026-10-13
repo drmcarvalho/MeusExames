@@ -52,7 +52,6 @@ fun ListaExames(
     modifier: Modifier = Modifier,
 ) {
     val formatoData = remember { DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT) }
-    // Só o id é guardado, para a confirmação continuar aberta depois de girar a tela.
     var idExameParaApagar by rememberSaveable { mutableStateOf<Long?>(null) }
 
     Scaffold(
@@ -73,7 +72,6 @@ fun ListaExames(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
-            // Espaço extra embaixo para o último card rolar acima do botão de cadastrar.
             contentPadding = PaddingValues(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 88.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
@@ -126,7 +124,6 @@ private fun ExameCard(
                     stringResource(R.string.descricao_exame_formatada, truncar(descricao))
                 )
             }
-            // Em tela estreita os três botões não cabem lado a lado; o que sobra desce de linha.
             FlowRow(
                 modifier = Modifier.padding(top = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
