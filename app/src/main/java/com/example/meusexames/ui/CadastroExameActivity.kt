@@ -43,8 +43,6 @@ class CadastroExameActivity : ComponentActivity() {
         }
         setContent {
             MeusExamesTheme {
-                // Na edição o formulário só entra na tela depois que o exame chega do banco,
-                // para já nascer preenchido com ele.
                 if (idExame == null || exameEmEdicao != null) {
                     CadastroExame(
                         identificarArquivo = exameBll::identificarArquivo,
@@ -90,7 +88,6 @@ class CadastroExameActivity : ComponentActivity() {
         }
     }
 
-    // [selecionado] é o arquivo escolhido na tela; sem ele, abre o que o exame em edição já tem.
     private fun abrirArquivo(selecionado: Uri?) {
         val exame = exameEmEdicao ?: return
         lifecycleScope.launch {
@@ -102,10 +99,9 @@ class CadastroExameActivity : ComponentActivity() {
             val abertura = Intent(Intent.ACTION_VIEW)
                 .setDataAndType(arquivo.uri, arquivo.tipoMime)
                 .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            // O Android escolhe o app pelo tipo do arquivo; sem nenhum que o abra, só avisa.
             try {
                 startActivity(abertura)
-            } catch (e: ActivityNotFoundException) {
+            } catch (_: ActivityNotFoundException) {
                 avisar(getString(R.string.erro_abrir_arquivo))
             }
         }
@@ -129,7 +125,6 @@ class CadastroExameActivity : ComponentActivity() {
         ErroCadastro.FALHA_AO_SALVAR -> getString(R.string.erro_salvar)
     }
 
-    // O plural concorda com o tamanho máximo, que é o número ao lado da palavra na mensagem.
     private fun mensagemDeTamanho(@PluralsRes mensagem: Int, tamanho: IntRange): String =
         resources.getQuantityString(mensagem, tamanho.last, tamanho.first, tamanho.last)
 
