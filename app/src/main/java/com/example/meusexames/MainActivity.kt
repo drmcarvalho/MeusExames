@@ -60,8 +60,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    // Abre a tela de compartilhamento do Android para o usuário escolher o app que recebe o
-    // texto do exame e o arquivo anexado a ele.
     private fun compartilhar(exame: Exame) {
         lifecycleScope.launch {
             val arquivo = exameBll.localizarArquivo(exame)
@@ -70,8 +68,6 @@ class MainActivity : ComponentActivity() {
                 .putExtra(Intent.EXTRA_TEXT, exameBll.textoParaCompartilhar(exame))
                 .putExtra(Intent.EXTRA_STREAM, arquivo.uri)
                 .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            // Com o arquivo também no ClipData, a permissão de leitura vale para a própria tela
-            // de compartilhamento, que mostra a prévia dele, e não só para o app escolhido.
             envio.clipData = ClipData.newRawUri(null, arquivo.uri)
             startActivity(Intent.createChooser(envio, null))
         }
