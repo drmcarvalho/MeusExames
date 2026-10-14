@@ -65,7 +65,6 @@ class ExameBll(
         recursos.getString(
             R.string.modelo_compartilhar_exame,
             exame.titulo,
-            // A data sai no formato do idioma do aparelho, como na lista de exames.
             exame.dataExame.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)),
         )
 
