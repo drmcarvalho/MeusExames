@@ -2,6 +2,9 @@ package com.example.meusexames.ui
 
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsEqualTo
+import androidx.compose.ui.test.assertIsFocused
+import androidx.compose.ui.test.assertIsNotFocused
 import androidx.compose.ui.test.getUnclippedBoundsInRoot
 import androidx.compose.ui.test.hasAnyAncestor
 import androidx.compose.ui.test.hasSetTextAction
@@ -11,8 +14,10 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performImeAction
+import androidx.compose.ui.test.performTextClearance
 import androidx.compose.ui.test.performTextInput
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -142,56 +147,54 @@ class ListaExamesTest {
     }
 
     @Test
-    fun exibeCampoDePesquisaAcimaDaListaComOBotaoADireitaDele() {
+    fun exibeCampoDePesquisaAcimaDaListaSemBotaoAoLado() {
         exibir(listOf(novoExame(id = 1, titulo = "Hemograma")))
 
+        val tela = composeRule.onRoot().getUnclippedBoundsInRoot()
         val campo = composeRule.onNodeWithText(context.getString(R.string.pesquisar_exame))
             .assertIsDisplayed()
             .getUnclippedBoundsInRoot()
-        val botao = composeRule.onNodeWithContentDescription(context.getString(R.string.pesquisar))
-            .assertIsDisplayed()
-            .getUnclippedBoundsInRoot()
         val exame = composeRule.onNodeWithText("Hemograma").getUnclippedBoundsInRoot()
-        assertTrue(botao.left >= campo.right)
+        // Sem botão à direita, o campo fica com a mesma margem dos dois lados da tela.
+        (tela.right - campo.right).assertIsEqualTo(campo.left - tela.left, "margem direita")
         assertTrue(exame.top >= campo.bottom)
     }
 
     @Test
-    fun botaoDePesquisarChamaAoPesquisarComOTermoDigitado() {
-        val pesquisados = mutableListOf<String>()
-        exibir(emptyList(), aoPesquisar = { pesquisados += it })
-
-        composeRule.onNodeWithText(context.getString(R.string.pesquisar_exame))
-            .performTextInput("hemograma")
-        // Digitar não pesquisa: a pesquisa só sai quando o botão é tocado.
-        assertTrue(pesquisados.isEmpty())
-        composeRule.onNodeWithContentDescription(context.getString(R.string.pesquisar))
-            .performClick()
-
-        assertEquals(listOf("hemograma"), pesquisados)
-    }
-
-    @Test
-    fun botaoDePesquisarComOCampoVazioChamaAoPesquisarSemTermo() {
-        val pesquisados = mutableListOf<String>()
-        exibir(emptyList(), aoPesquisar = { pesquisados += it })
-
-        composeRule.onNodeWithContentDescription(context.getString(R.string.pesquisar))
-            .performClick()
-
-        assertEquals(listOf(""), pesquisados)
-    }
-
-    @Test
-    fun teclaDePesquisaDoTecladoChamaAoPesquisarComOTermoDigitado() {
+    fun cadaLetraDigitadaChamaAoPesquisarComOQueEstaNoCampo() {
         val pesquisados = mutableListOf<String>()
         exibir(emptyList(), aoPesquisar = { pesquisados += it })
 
         // Com o termo digitado o campo deixa de mostrar o texto que o identificava.
         val campo = composeRule.onNode(hasSetTextAction())
+        "hemo".forEach { letra -> campo.performTextInput(letra.toString()) }
+
+        assertEquals(listOf("h", "he", "hem", "hemo"), pesquisados)
+    }
+
+    @Test
+    fun apagarOTermoChamaAoPesquisarSemTermo() {
+        val pesquisados = mutableListOf<String>()
+        exibir(emptyList(), aoPesquisar = { pesquisados += it })
+
+        val campo = composeRule.onNode(hasSetTextAction())
+        campo.performTextInput("hemo")
+        campo.performTextClearance()
+
+        assertEquals(listOf("hemo", ""), pesquisados)
+    }
+
+    @Test
+    fun teclaDePesquisaDoTecladoTiraOFocoDoCampoSemPesquisarDeNovo() {
+        val pesquisados = mutableListOf<String>()
+        exibir(emptyList(), aoPesquisar = { pesquisados += it })
+
+        val campo = composeRule.onNode(hasSetTextAction())
         campo.performTextInput("eletro")
+        campo.assertIsFocused()
         campo.performImeAction()
 
+        campo.assertIsNotFocused()
         assertEquals(listOf("eletro"), pesquisados)
     }
 
