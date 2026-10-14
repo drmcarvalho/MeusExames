@@ -63,7 +63,7 @@ class CadastroExameActivity : ComponentActivity() {
         lifecycleScope.launch {
             val exame = exameBll.buscarPorId(idExame)
             if (exame == null) {
-                avisar(getString(R.string.erro_exame_nao_encontrado))
+                exibirMensagem(getString(R.string.erro_exame_nao_encontrado))
                 finish()
             } else {
                 exameEmEdicao = exame
@@ -85,14 +85,14 @@ class CadastroExameActivity : ComponentActivity() {
                 finish()
             } else {
                 salvando = false
-                avisar(mensagemDe(erro))
+                exibirMensagem(mensagemDe(erro))
             }
         }
     }
 
     private suspend fun aceitarArquivo(arquivo: Uri): Boolean {
         if (!exameBll.excedeTamanhoMaximo(arquivo)) return true
-        avisar(mensagemDe(ErroCadastro.ARQUIVO_MUITO_GRANDE))
+        exibirMensagem(mensagemDe(ErroCadastro.ARQUIVO_MUITO_GRANDE))
         return false
     }
 
@@ -110,12 +110,12 @@ class CadastroExameActivity : ComponentActivity() {
             try {
                 startActivity(abertura)
             } catch (_: ActivityNotFoundException) {
-                avisar(getString(R.string.erro_abrir_arquivo))
+                exibirMensagem(getString(R.string.erro_abrir_arquivo))
             }
         }
     }
 
-    private fun avisar(mensagem: String) {
+    private fun exibirMensagem(mensagem: String) {
         Toast.makeText(this, mensagem, Toast.LENGTH_LONG).show()
     }
 
