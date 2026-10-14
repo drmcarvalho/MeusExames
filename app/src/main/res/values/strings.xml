@@ -40,6 +40,7 @@
     <string name="erro_data_exame">Informe a data do exame.</string>
     <string name="erro_arquivo">Selecione o arquivo do exame.</string>
     <string name="erro_tipo_arquivo">O arquivo deve ser PDF, imagem ou DOC.</string>
+    <string name="erro_tamanho_arquivo">O arquivo deve ter no máximo %1$s.</string>
     <plurals name="erro_comentario">
         <item quantity="one">O comentário deve ter entre %1$d e %2$d caractere.</item>
         <item quantity="other">O comentário deve ter entre %1$d e %2$d caracteres.</item>

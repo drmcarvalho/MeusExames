@@ -10,6 +10,7 @@ import com.example.meusexames.dal.ArmazenamentoArquivos
 import com.example.meusexames.dal.models.Exame
 import com.example.meusexames.dal.models.TipoArquivo
 import java.io.File
+import java.io.RandomAccessFile
 import java.time.LocalDate
 import java.util.Locale
 import kotlinx.coroutines.flow.first
@@ -150,6 +151,45 @@ class ExameBllTest {
     }
 
     @Test
+    fun arquivoPodeTerNoMaximo15Mb() = runBlocking {
+        val noLimite = arquivoDeOrigemComTamanho("no-limite.pdf", 15_000_000)
+        val acima = arquivoDeOrigemComTamanho("acima.pdf", 15_000_001)
+
+        assertFalse(bll.excedeTamanhoMaximo(noLimite))
+        assertTrue(bll.excedeTamanhoMaximo(acima))
+    }
+
+    @Test
+    fun tamanhoDoArquivoComEnderecoContentVemDoProvedor() = runBlocking {
+        // O seletor de arquivos devolve content://; aqui quem responde é o FileProvider do app.
+        val exame = exameSemCopia("Hemograma", "exames/acima-do-limite.pdf")
+        val arquivo = copiaDe(exame)
+        arquivo.parentFile?.mkdirs()
+        try {
+            RandomAccessFile(arquivo, "rw").use { it.setLength(15_000_001) }
+            val endereco = bll.localizarArquivo(exame).uri
+
+            assertEquals("content", endereco.scheme)
+            assertTrue(bll.excedeTamanhoMaximo(endereco))
+        } finally {
+            arquivo.delete()
+        }
+    }
+
+    @Test
+    fun arquivoAcimaDe15MbNaoGravaOExame() = runBlocking {
+        val arquivosAntes = arquivosDosExames()
+
+        val erro = bll.cadastrar(
+            dados(arquivo = arquivoDeOrigemComTamanho("acima.pdf", 15_000_001))
+        )
+
+        assertEquals(ErroCadastro.ARQUIVO_MUITO_GRANDE, erro)
+        assertTrue(gravados().isEmpty())
+        assertEquals(arquivosAntes, arquivosDosExames())
+    }
+
+    @Test
     fun arquivoQueNaoPodeSerLidoNaoGravaOExame() = runBlocking {
         val arquivoInexistente = Uri.fromFile(File(pastaDeOrigem, "sumiu.pdf"))
 
@@ -245,6 +285,8 @@ class ExameBllTest {
             dados(descricao = "ab") to ErroCadastro.DESCRICAO_INVALIDA,
             dados(dataExame = null) to ErroCadastro.DATA_OBRIGATORIA,
             dados(arquivo = arquivoDeOrigem("notas.txt")) to ErroCadastro.TIPO_ARQUIVO_INVALIDO,
+            dados(arquivo = arquivoDeOrigemComTamanho("acima.pdf", 15_000_001)) to
+                ErroCadastro.ARQUIVO_MUITO_GRANDE,
             dados(comentario = "ab") to ErroCadastro.COMENTARIO_INVALIDO,
             dados(arquivo = Uri.fromFile(File(pastaDeOrigem, "sumiu.pdf"))) to
                 ErroCadastro.FALHA_AO_SALVAR,
@@ -428,6 +470,14 @@ class ExameBllTest {
     private fun arquivoDeOrigem(nome: String, conteudo: String = "conteúdo"): Uri {
         val arquivo = File(pastaDeOrigem, nome)
         arquivo.writeText(conteudo)
+        return Uri.fromFile(arquivo)
+    }
+
+    // O arquivo fica com o tamanho pedido sem que o conteúdo seja gravado, o que é rápido mesmo
+    // com 15 MB.
+    private fun arquivoDeOrigemComTamanho(nome: String, tamanho: Long): Uri {
+        val arquivo = File(pastaDeOrigem, nome)
+        RandomAccessFile(arquivo, "rw").use { it.setLength(tamanho) }
         return Uri.fromFile(arquivo)
     }
 

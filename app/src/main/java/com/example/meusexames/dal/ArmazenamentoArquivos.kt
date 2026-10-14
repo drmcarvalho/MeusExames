@@ -1,5 +1,6 @@
 package com.example.meusexames.dal
 
+import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
@@ -20,6 +21,25 @@ class ArmazenamentoArquivos(context: Context) {
 
     suspend fun obterTipoMime(origem: Uri): String? =
         withContext(Dispatchers.IO) { tipoMimeDe(origem) }
+
+    /** Tamanho de [origem] em bytes, ou null quando o provedor do arquivo não informa. */
+    suspend fun obterTamanho(origem: Uri): Long? = withContext(Dispatchers.IO) {
+        // Arquivo local (file://) não passa por provedor: é medido direto.
+        if (origem.scheme == ContentResolver.SCHEME_FILE) {
+            return@withContext origem.path?.let { File(it).length() }
+        }
+        context.contentResolver
+            .query(origem, arrayOf(OpenableColumns.SIZE), null, null, null)
+            ?.use { cursor ->
+                val coluna = cursor.getColumnIndex(OpenableColumns.SIZE)
+                // Arquivo remoto pode vir sem tamanho: a coluna existe, mas está nula.
+                if (coluna >= 0 && cursor.moveToFirst() && !cursor.isNull(coluna)) {
+                    cursor.getLong(coluna)
+                } else {
+                    null
+                }
+            }
+    }
 
     /**
      * Copia [origem] para a pasta de exames do app e devolve o caminho da cópia relativo a

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.format.Formatter
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -50,6 +51,7 @@ class CadastroExameActivity : ComponentActivity() {
                         aoCancelar = ::finish,
                         exame = exameEmEdicao,
                         aoAbrirArquivo = ::abrirArquivo,
+                        aceitarArquivo = ::aceitarArquivo,
                         salvando = salvando,
                     )
                 }
@@ -88,6 +90,12 @@ class CadastroExameActivity : ComponentActivity() {
         }
     }
 
+    private suspend fun aceitarArquivo(arquivo: Uri): Boolean {
+        if (!exameBll.excedeTamanhoMaximo(arquivo)) return true
+        avisar(mensagemDe(ErroCadastro.ARQUIVO_MUITO_GRANDE))
+        return false
+    }
+
     private fun abrirArquivo(selecionado: Uri?) {
         val exame = exameEmEdicao ?: return
         lifecycleScope.launch {
@@ -119,6 +127,10 @@ class CadastroExameActivity : ComponentActivity() {
         ErroCadastro.DATA_OBRIGATORIA -> getString(R.string.erro_data_exame)
         ErroCadastro.ARQUIVO_OBRIGATORIO -> getString(R.string.erro_arquivo)
         ErroCadastro.TIPO_ARQUIVO_INVALIDO -> getString(R.string.erro_tipo_arquivo)
+        ErroCadastro.ARQUIVO_MUITO_GRANDE -> getString(
+            R.string.erro_tamanho_arquivo,
+            Formatter.formatShortFileSize(this, ExameBll.TAMANHO_MAXIMO_ARQUIVO),
+        )
         ErroCadastro.COMENTARIO_INVALIDO ->
             mensagemDeTamanho(R.plurals.erro_comentario, ExameBll.TAMANHO_COMENTARIO)
         ErroCadastro.EXAME_NAO_ENCONTRADO -> getString(R.string.erro_exame_nao_encontrado)

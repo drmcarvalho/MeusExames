@@ -43,6 +43,15 @@ class ExameBll(
         )
 
     /**
+     * Diz se [arquivo] passa do tamanho máximo de anexo. Quando o provedor não informa o
+     * tamanho, não há como medir antes da cópia e o arquivo passa.
+     */
+    suspend fun excedeTamanhoMaximo(arquivo: Uri): Boolean {
+        val tamanho = arquivos.obterTamanho(arquivo) ?: return false
+        return tamanho > TAMANHO_MAXIMO_ARQUIVO
+    }
+
+    /**
      * Localiza o arquivo anexado a [exame] para que outro app possa abri-lo ou recebê-lo. Para
      * esse app o arquivo tem o título do exame como nome, e não o nome interno da cópia.
      */
@@ -85,6 +94,7 @@ class ExameBll(
         val arquivo = dados.arquivo ?: return ErroCadastro.ARQUIVO_OBRIGATORIO
         val tipoArquivo = identificarTipo(arquivos.obterTipoMime(arquivo))
             ?: return ErroCadastro.TIPO_ARQUIVO_INVALIDO
+        if (excedeTamanhoMaximo(arquivo)) return ErroCadastro.ARQUIVO_MUITO_GRANDE
         if (comentario != null && comentario.length !in TAMANHO_COMENTARIO) {
             return ErroCadastro.COMENTARIO_INVALIDO
         }
@@ -139,6 +149,9 @@ class ExameBll(
         val tipoNovoArquivo = novoArquivo?.let {
             identificarTipo(arquivos.obterTipoMime(it))
                 ?: return ErroCadastro.TIPO_ARQUIVO_INVALIDO
+        }
+        if (novoArquivo != null && excedeTamanhoMaximo(novoArquivo)) {
+            return ErroCadastro.ARQUIVO_MUITO_GRANDE
         }
         if (comentario != null && comentario.length !in TAMANHO_COMENTARIO) {
             return ErroCadastro.COMENTARIO_INVALIDO
@@ -218,6 +231,7 @@ class ExameBll(
         val TAMANHO_TITULO = 3..64
         val TAMANHO_DESCRICAO = 3..256
         val TAMANHO_COMENTARIO = 3..1024
+        const val TAMANHO_MAXIMO_ARQUIVO = 15_000_000L
 
         private const val PREFIXO_MIME_IMAGEM = "image/"
         private const val TIPO_MIME_IMAGEM = "$PREFIXO_MIME_IMAGEM*"

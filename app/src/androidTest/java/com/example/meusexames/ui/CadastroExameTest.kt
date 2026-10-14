@@ -29,6 +29,7 @@ import java.util.Locale
 import java.util.TimeZone
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -56,6 +57,7 @@ class CadastroExameTest {
     )
     private val salvos = mutableListOf<DadosExame>()
     private val abertos = mutableListOf<Uri?>()
+    private val conferidos = mutableListOf<Uri>()
     private var cancelamentos = 0
 
     @After
@@ -203,7 +205,26 @@ class CadastroExameTest {
         assertEquals(arquivo, salvos.single().arquivo)
     }
 
-    private fun exibir(salvando: Boolean = false, exame: Exame? = null) {
+    @Test
+    fun arquivoRecusadoNaoSubstituiOGravadoNaTela() {
+        exibir(exame = exameGravado, aceitaArquivo = false)
+
+        composeRule.onNodeWithText(texto(R.string.selecionar_arquivo))
+            .performScrollTo()
+            .performClick()
+        composeRule.onNodeWithText("gravado.jpg").assertExists()
+        composeRule.onNodeWithText("hemograma.pdf").assertDoesNotExist()
+        composeRule.onNodeWithText(texto(R.string.salvar)).performScrollTo().performClick()
+
+        assertEquals(listOf(arquivo), conferidos)
+        assertNull(salvos.single().arquivo)
+    }
+
+    private fun exibir(
+        salvando: Boolean = false,
+        exame: Exame? = null,
+        aceitaArquivo: Boolean = true,
+    ) {
         val seletorQueEscolheOArquivo = object : ActivityResultRegistryOwner {
             override val activityResultRegistry = object : ActivityResultRegistry() {
                 override fun <I, O> onLaunch(
@@ -229,6 +250,10 @@ class CadastroExameTest {
                         aoCancelar = { cancelamentos++ },
                         exame = exame,
                         aoAbrirArquivo = { abertos += it },
+                        aceitarArquivo = {
+                            conferidos += it
+                            aceitaArquivo
+                        },
                         salvando = salvando,
                     )
                 }

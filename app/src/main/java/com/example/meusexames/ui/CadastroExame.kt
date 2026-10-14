@@ -43,6 +43,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -67,6 +68,7 @@ import java.time.LocalDate
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import kotlinx.coroutines.launch
 
 private val TextoComFrases = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences)
 
@@ -75,6 +77,8 @@ private val TextoComFrases = KeyboardOptions(capitalization = KeyboardCapitaliza
  * edição, já preenchido com os dados dele.
  *
  * [aoAbrirArquivo] recebe o arquivo escolhido na tela, ou nulo para abrir o que [exame] já tem.
+ * [aceitarArquivo] confere o arquivo que volta do seletor; se ele for recusado, a tela continua
+ * com o arquivo que tinha.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -85,6 +89,7 @@ fun CadastroExame(
     modifier: Modifier = Modifier,
     exame: Exame? = null,
     aoAbrirArquivo: (Uri?) -> Unit = {},
+    aceitarArquivo: suspend (Uri) -> Boolean = { true },
     salvando: Boolean = false,
 ) {
     var titulo by rememberSaveable { mutableStateOf(exame?.titulo.orEmpty()) }
@@ -104,9 +109,12 @@ fun CadastroExame(
     ) {
         arquivo?.let { value = identificarArquivo(it) }
     }
+    val escopo = rememberCoroutineScope()
     val seletorDeArquivo =
         rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { escolhido ->
-            if (escolhido != null) arquivo = escolhido
+            if (escolhido != null) {
+                escopo.launch { if (aceitarArquivo(escolhido)) arquivo = escolhido }
+            }
         }
     val formatoData = remember { DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT) }
     val tituloDaTela =
