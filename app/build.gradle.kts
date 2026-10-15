@@ -5,6 +5,10 @@ plugins {
     alias(libs.plugins.androidx.room)
 }
 
+val appVersionName = "0.0.3"
+val appVersionCode = appVersionName.split(".").map { it.toInt() }
+    .let { (major, minor, patch) -> major * 10000 + minor * 100 + patch }
+
 android {
     namespace = "com.example.meusexames"
     compileSdk {
@@ -15,8 +19,8 @@ android {
         applicationId = "com.example.meusexames"
         minSdk = 28
         targetSdk = 37
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = appVersionCode
+        versionName = appVersionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
