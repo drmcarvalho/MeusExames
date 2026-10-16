@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.androidx.room)
 }
 
-// Precisa sempre incrementar a versao quando for criar uma release nova
+// Precisa sempre incrementar a versao baseada na tag quando for criar uma release nova
 val appVersionName = "0.0.3"
 val appVersionCode = appVersionName.split(".").map { it.toInt() }
     .let { (major, minor, patch) -> major * 10000 + minor * 100 + patch }
