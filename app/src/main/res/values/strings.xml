@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MeusExames</string>
+    <string name="app_name" translatable="false">MeusExames</string>
     <string name="titulo_lista_exames">Lista de exames (histórico)</string>
     <string name="pesquisar_exame">Pesquisar exame</string>
     <string name="editar">Editar</string>
@@ -17,9 +17,9 @@
     <string name="selecionar_data">Selecionar data</string>
     <string name="arquivo_exame">Arquivo</string>
     <string name="tipo_arquivo">Tipo do arquivo</string>
-    <string name="tipo_arquivo_pdf">PDF</string>
+    <string name="tipo_arquivo_pdf" translatable="false">PDF</string>
     <string name="tipo_arquivo_imagem">Imagem</string>
-    <string name="tipo_arquivo_doc">DOC</string>
+    <string name="tipo_arquivo_doc" translatable="false">DOC</string>
     <string name="selecionar_arquivo">Selecionar arquivo</string>
     <string name="abrir_arquivo">Abrir arquivo</string>
     <string name="houve_alteracao">Houve alteração no exame?</string>

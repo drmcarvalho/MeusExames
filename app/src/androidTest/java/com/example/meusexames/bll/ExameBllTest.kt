@@ -1,5 +1,6 @@
 package com.example.meusexames.bll
 
+import android.content.res.Configuration
 import android.net.Uri
 import android.provider.OpenableColumns
 import androidx.room.Room
@@ -409,7 +410,7 @@ class ExameBllTest {
     @Test
     fun textoParaCompartilharSegueOModeloComTituloEDataDoExame() {
         // A data segue o formato do idioma do aparelho; em pt-BR ele é dia/mês/ano.
-        Locale.setDefault(Locale.Category.FORMAT, Locale.forLanguageTag("pt-BR"))
+        val bll = bllNoIdioma("pt-BR")
         val exame = Exame(
             titulo = "Hemograma",
             dataExame = LocalDate.of(2026, 10, 13),
@@ -421,6 +422,20 @@ class ExameBllTest {
             "Exame: Hemograma\nData do exame: 13/10/2026",
             bll.textoParaCompartilhar(exame),
         )
+    }
+
+    @Test
+    fun textoParaCompartilharEmInglesUsaOModeloEOFormatoDeDataDoIdioma() {
+        // Em en-US a data curta é mês/dia/ano, com o ano em dois dígitos.
+        val bll = bllNoIdioma("en-US")
+        val exame = Exame(
+            titulo = "Hemograma",
+            dataExame = LocalDate.of(2026, 10, 13),
+            caminhoArquivo = "exames/hemograma.pdf",
+            tipoArquivo = TipoArquivo.PDF,
+        )
+
+        assertEquals("Exam: Hemograma\nExam date: 10/13/26", bll.textoParaCompartilhar(exame))
     }
 
     @Test
@@ -436,6 +451,20 @@ class ExameBllTest {
             val identificado = bll.identificarArquivo(arquivoDeOrigem(nome))
             assertEquals(ArquivoSelecionado(nome, tipo), identificado)
         }
+    }
+
+    // Os textos e o formato da data seguem o idioma do aparelho; aqui os dois ficam em [idioma],
+    // seja qual for o do emulador.
+    private fun bllNoIdioma(idioma: String): ExameBll {
+        val localidade = Locale.forLanguageTag(idioma)
+        Locale.setDefault(Locale.Category.FORMAT, localidade)
+        val configuracao = Configuration(context.resources.configuration)
+        configuracao.setLocale(localidade)
+        return ExameBll(
+            banco.exameDao(),
+            ArmazenamentoArquivos(context),
+            context.createConfigurationContext(configuracao).resources,
+        )
     }
 
     private suspend fun gravados(): List<Exame> = banco.exameDao().listar().first()

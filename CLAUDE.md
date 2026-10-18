@@ -16,3 +16,8 @@ Exemplo:
 2. Leia todos os ancestrais, da raiz até o arquivo atual, nessa ordem.
 3. Se um ancestral não existir, pare e avise. Não invente contexto.
 4. Se o filho contradizer o pai, vale o filho.
+
+# Regras gerais para seguir
+
+Não execute o emulator, quando executar uma implementação de código peça para mim rodar o emulador 
+via interface do android studio e eu mesmo vou validar.
