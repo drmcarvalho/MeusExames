@@ -26,5 +26,4 @@ Em seguida, no Android Studio faça da aplicação build e execute.
 ---
 
 # TODO
-- Permitir autenticação por biometria para proteger os exames de acesso não autorizado.
 - Exportação de todos os arquivos correspondentes aos exames para um arquivo zip de backup.
