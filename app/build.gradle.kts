@@ -6,7 +6,7 @@ plugins {
 }
 
 // Precisa sempre incrementar a versao baseada na tag quando for criar uma release nova
-val appVersionName = "0.0.5"
+val appVersionName = "0.0.6"
 val appVersionCode = appVersionName.split(".").map { it.toInt() }
     .let { (major, minor, patch) -> major * 10000 + minor * 100 + patch }
 
