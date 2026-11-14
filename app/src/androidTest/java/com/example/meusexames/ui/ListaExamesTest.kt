@@ -292,6 +292,7 @@ class ListaExamesTest {
                     aoEditar = aoEditar,
                     aoApagar = aoApagar,
                     aoCompartilhar = aoCompartilhar,
+                    aoConfigurar = {},
                 )
             }
         }

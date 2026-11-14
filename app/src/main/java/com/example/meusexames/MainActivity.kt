@@ -4,8 +4,6 @@ import android.content.ClipData
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -16,39 +14,41 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.lifecycleScope
 import com.example.meusexames.bll.ExameBll
 import com.example.meusexames.dal.models.Exame
+import com.example.meusexames.ui.ActivityProtegida
 import com.example.meusexames.ui.CadastroExameActivity
+import com.example.meusexames.ui.ConfiguracoesActivity
 import com.example.meusexames.ui.ListaExames
-import com.example.meusexames.ui.theme.MeusExamesTheme
 import kotlinx.coroutines.launch
 
-class MainActivity : ComponentActivity() {
+class MainActivity : ActivityProtegida() {
 
     private val exameBll by lazy { ExameBll(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContent {
-            MeusExamesTheme {
-                // O termo da última pesquisa feita. Antes dela a lista mostra todos os exames.
-                var termoPesquisado by rememberSaveable { mutableStateOf<String?>(null) }
-                val fluxoExames = remember(termoPesquisado) {
-                    termoPesquisado?.let(exameBll::pesquisar) ?: exameBll.listar()
-                }
-                val exames by fluxoExames.collectAsState(initial = emptyList())
-                ListaExames(
-                    exames = exames,
-                    aoPesquisar = { termoPesquisado = it },
-                    aoCadastrar = {
-                        startActivity(Intent(this, CadastroExameActivity::class.java))
-                    },
-                    aoEditar = { exame ->
-                        startActivity(CadastroExameActivity.intentParaEditar(this, exame.id))
-                    },
-                    aoApagar = ::apagar,
-                    aoCompartilhar = ::compartilhar,
-                )
+        setConteudoProtegido {
+            // O termo da última pesquisa feita. Antes dela a lista mostra todos os exames.
+            var termoPesquisado by rememberSaveable { mutableStateOf<String?>(null) }
+            val fluxoExames = remember(termoPesquisado) {
+                termoPesquisado?.let(exameBll::pesquisar) ?: exameBll.listar()
             }
+            val exames by fluxoExames.collectAsState(initial = emptyList())
+            ListaExames(
+                exames = exames,
+                aoPesquisar = { termoPesquisado = it },
+                aoCadastrar = {
+                    startActivity(Intent(this, CadastroExameActivity::class.java))
+                },
+                aoEditar = { exame ->
+                    startActivity(CadastroExameActivity.intentParaEditar(this, exame.id))
+                },
+                aoApagar = ::apagar,
+                aoCompartilhar = ::compartilhar,
+                aoConfigurar = {
+                    startActivity(Intent(this, ConfiguracoesActivity::class.java))
+                },
+            )
         }
     }
 

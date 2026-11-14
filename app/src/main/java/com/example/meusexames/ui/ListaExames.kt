@@ -16,6 +16,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
@@ -55,6 +56,7 @@ fun ListaExames(
     aoEditar: (Exame) -> Unit,
     aoApagar: (Exame) -> Unit,
     aoCompartilhar: (Exame) -> Unit,
+    aoConfigurar: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val formatoData = remember { DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT) }
@@ -63,7 +65,17 @@ fun ListaExames(
     Scaffold(
         modifier = modifier,
         topBar = {
-            TopAppBar(title = { Text(stringResource(R.string.titulo_lista_exames)) })
+            TopAppBar(
+                title = { Text(stringResource(R.string.titulo_lista_exames)) },
+                actions = {
+                    IconButton(onClick = aoConfigurar) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_configuracoes),
+                            contentDescription = stringResource(R.string.titulo_configuracoes),
+                        )
+                    }
+                },
+            )
         },
         floatingActionButton = {
             FloatingActionButton(onClick = aoCadastrar) {
@@ -239,6 +251,7 @@ private fun ListaExamesPreview() {
             aoEditar = {},
             aoApagar = {},
             aoCompartilhar = {},
+            aoConfigurar = {},
         )
     }
 }

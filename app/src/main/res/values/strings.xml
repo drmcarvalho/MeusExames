@@ -51,4 +51,11 @@
     <string name="titulo_apagar_exame">Apagar exame?</string>
     <string name="mensagem_apagar_exame">O exame “%1$s” e o arquivo dele serão apagados. Essa ação não pode ser desfeita.</string>
     <string name="erro_apagar">Não foi possível apagar o exame. Tente novamente.</string>
+    <string name="titulo_configuracoes">Configurações</string>
+    <string name="voltar">Voltar</string>
+    <string name="bloquear_app">Bloquear o app</string>
+    <string name="bloquear_app_apoio">Pede digital, rosto ou PIN ao abrir o app</string>
+    <string name="titulo_desbloquear">Desbloquear MeusExames</string>
+    <string name="app_bloqueado">MeusExames está bloqueado</string>
+    <string name="desbloquear">Desbloquear</string>
 </resources>

@@ -48,4 +48,11 @@
     <string name="titulo_apagar_exame">Delete exam?</string>
     <string name="mensagem_apagar_exame">The exam “%1$s” and its file will be deleted. This action can\'t be undone.</string>
     <string name="erro_apagar">Couldn\'t delete the exam. Try again.</string>
+    <string name="titulo_configuracoes">Settings</string>
+    <string name="voltar">Back</string>
+    <string name="bloquear_app">Lock the app</string>
+    <string name="bloquear_app_apoio">Asks for fingerprint, face or PIN when opening the app</string>
+    <string name="titulo_desbloquear">Unlock MeusExames</string>
+    <string name="app_bloqueado">MeusExames is locked</string>
+    <string name="desbloquear">Unlock</string>
 </resources>

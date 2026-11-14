@@ -32,6 +32,10 @@
             android:exported="false"
             android:label="@string/titulo_cadastro_exame"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.ConfiguracoesActivity"
+            android:exported="false"
+            android:label="@string/titulo_configuracoes" />
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.arquivos"

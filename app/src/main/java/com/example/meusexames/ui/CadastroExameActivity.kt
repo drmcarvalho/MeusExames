@@ -7,8 +7,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.format.Formatter
 import android.widget.Toast
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.PluralsRes
 import androidx.compose.runtime.getValue
@@ -20,10 +18,9 @@ import com.example.meusexames.bll.DadosExame
 import com.example.meusexames.bll.ErroCadastro
 import com.example.meusexames.bll.ExameBll
 import com.example.meusexames.dal.models.Exame
-import com.example.meusexames.ui.theme.MeusExamesTheme
 import kotlinx.coroutines.launch
 
-class CadastroExameActivity : ComponentActivity() {
+class CadastroExameActivity : ActivityProtegida() {
 
     private val exameBll by lazy { ExameBll(this) }
 
@@ -42,19 +39,17 @@ class CadastroExameActivity : ComponentActivity() {
             setTitle(R.string.titulo_edicao_exame)
             carregar(idExame)
         }
-        setContent {
-            MeusExamesTheme {
-                if (idExame == null || exameEmEdicao != null) {
-                    CadastroExame(
-                        identificarArquivo = exameBll::identificarArquivo,
-                        aoSalvar = ::salvar,
-                        aoCancelar = ::finish,
-                        exame = exameEmEdicao,
-                        aoAbrirArquivo = ::abrirArquivo,
-                        aceitarArquivo = ::aceitarArquivo,
-                        salvando = salvando,
-                    )
-                }
+        setConteudoProtegido {
+            if (idExame == null || exameEmEdicao != null) {
+                CadastroExame(
+                    identificarArquivo = exameBll::identificarArquivo,
+                    aoSalvar = ::salvar,
+                    aoCancelar = ::finish,
+                    exame = exameEmEdicao,
+                    aoAbrirArquivo = ::abrirArquivo,
+                    aceitarArquivo = ::aceitarArquivo,
+                    salvando = salvando,
+                )
             }
         }
     }
