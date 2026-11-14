@@ -1,0 +1,51 @@
+<resources>
+    <string name="titulo_lista_exames">Exam list (history)</string>
+    <string name="pesquisar_exame">Search exams</string>
+    <string name="editar">Edit</string>
+    <string name="apagar">Delete</string>
+    <string name="compartilhar">Share</string>
+    <string name="modelo_compartilhar_exame">Exam: %1$s\nExam date: %2$s</string>
+    <string name="cadastrar_exame">Add exam</string>
+    <string name="titulo_cadastro_exame">New exam</string>
+    <string name="titulo_edicao_exame">Edit exam</string>
+    <string name="titulo_exame">Exam title</string>
+    <string name="descricao_exame">Description (optional)</string>
+    <string name="descricao_exame_formatada">Description %1$s</string>
+    <string name="data_exame">Exam date</string>
+    <string name="data_exame_formatada">Exam date %1$s</string>
+    <string name="selecionar_data">Select date</string>
+    <string name="arquivo_exame">File</string>
+    <string name="tipo_arquivo">File type</string>
+    <string name="tipo_arquivo_imagem">Image</string>
+    <string name="selecionar_arquivo">Select file</string>
+    <string name="abrir_arquivo">Open file</string>
+    <string name="houve_alteracao">Was the result abnormal?</string>
+    <string name="houve_alteracao_formatada">Abnormal result %1$s</string>
+    <string name="sim">Yes</string>
+    <string name="nao">No</string>
+    <string name="comentario">Comment (optional)</string>
+    <string name="salvar">Save</string>
+    <string name="cancelar">Cancel</string>
+    <plurals name="erro_titulo">
+        <item quantity="one">The title must be between %1$d and %2$d character long.</item>
+        <item quantity="other">The title must be between %1$d and %2$d characters long.</item>
+    </plurals>
+    <plurals name="erro_descricao">
+        <item quantity="one">The description must be between %1$d and %2$d character long.</item>
+        <item quantity="other">The description must be between %1$d and %2$d characters long.</item>
+    </plurals>
+    <string name="erro_data_exame">Enter the exam date.</string>
+    <string name="erro_arquivo">Select the exam file.</string>
+    <string name="erro_tipo_arquivo">The file must be a PDF, an image or a DOC.</string>
+    <string name="erro_tamanho_arquivo">The file must be at most %1$s.</string>
+    <plurals name="erro_comentario">
+        <item quantity="one">The comment must be between %1$d and %2$d character long.</item>
+        <item quantity="other">The comment must be between %1$d and %2$d characters long.</item>
+    </plurals>
+    <string name="erro_salvar">Couldn\'t save the exam. Try again.</string>
+    <string name="erro_exame_nao_encontrado">Exam not found.</string>
+    <string name="erro_abrir_arquivo">No installed app can open this type of file.</string>
+    <string name="titulo_apagar_exame">Delete exam?</string>
+    <string name="mensagem_apagar_exame">The exam “%1$s” and its file will be deleted. This action can\'t be undone.</string>
+    <string name="erro_apagar">Couldn\'t delete the exam. Try again.</string>
+</resources>

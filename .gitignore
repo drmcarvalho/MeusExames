@@ -16,7 +16,7 @@ local.properties
 
 .kotlin
 
-app
+app/release/
 
 .idea
 
@@ -277,6 +277,8 @@ cmake-build-*/
 
 # Package Files #
 *.jar
+# O *.jar acima anula a exceção do wrapper feita mais cedo; sem o jar, o gradlew não roda.
+!/gradle/wrapper/gradle-wrapper.jar
 *.nar
 *.zip
 *.tar.gz

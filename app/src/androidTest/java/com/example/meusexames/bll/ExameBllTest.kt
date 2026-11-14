@@ -302,6 +302,31 @@ class ExameBllTest {
     }
 
     @Test
+    fun cadastrarQueFalhaAoGravarApagaOArquivoCopiado() = runBlocking {
+        val arquivosAntes = arquivosDosExames()
+        recusarNoBanco("INSERT")
+
+        assertEquals(ErroCadastro.FALHA_AO_SALVAR, bll.cadastrar(dados()))
+
+        assertTrue(gravados().isEmpty())
+        assertEquals(arquivosAntes, arquivosDosExames())
+    }
+
+    @Test
+    fun atualizarQueFalhaAoGravarMantemOArquivoOriginalEApagaOCopiado() = runBlocking {
+        val original = cadastrado(dados())
+        val arquivosAntes = arquivosDosExames()
+        recusarNoBanco("UPDATE")
+
+        val erro = bll.atualizar(original.id, dados(arquivo = arquivoDeOrigem("raio-x.jpg")))
+
+        assertEquals(ErroCadastro.FALHA_AO_SALVAR, erro)
+        assertEquals(listOf(original), gravados())
+        // O original continua (o exame aponta para ele) e a cópia do novo arquivo foi apagada.
+        assertEquals(arquivosAntes, arquivosDosExames())
+    }
+
+    @Test
     fun atualizarExameQueNaoExisteDevolveErro() = runBlocking {
         val erro = bll.atualizar(id = 123, dados())
 
@@ -325,11 +350,7 @@ class ExameBllTest {
     @Test
     fun excluirQueFalhaNaoMexeNoExameNemNoArquivo() = runBlocking {
         val exame = cadastrado(dados())
-        // O banco passa a recusar a exclusão, como numa falha de gravação.
-        banco.openHelper.writableDatabase.execSQL(
-            "CREATE TRIGGER recusa_exclusao BEFORE DELETE ON exames " +
-                "BEGIN SELECT RAISE(ABORT, 'exclusão recusada'); END"
-        )
+        recusarNoBanco("DELETE")
 
         assertFalse(bll.excluir(exame))
 
@@ -464,6 +485,15 @@ class ExameBllTest {
             banco.exameDao(),
             ArmazenamentoArquivos(context),
             context.createConfigurationContext(configuracao).resources,
+        )
+    }
+
+    // O banco passa a recusar [operacao] (INSERT, UPDATE ou DELETE) em exames, como numa falha de
+    // gravação.
+    private fun recusarNoBanco(operacao: String) {
+        banco.openHelper.writableDatabase.execSQL(
+            "CREATE TRIGGER recusa_$operacao BEFORE $operacao ON exames " +
+                "BEGIN SELECT RAISE(ABORT, 'gravação recusada'); END"
         )
     }
 

@@ -23,8 +23,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!-- Girar a tela ou trocar o tema não recria a activity: recriada no meio de um salvamento,
+             ela voltava com o formulário preenchido e o botão Salvar ativo, e o exame saía duplicado.
+             O Compose redesenha a tela sozinho com a nova configuração. -->
         <activity
             android:name=".ui.CadastroExameActivity"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:exported="false"
             android:label="@string/titulo_cadastro_exame"
             android:windowSoftInputMode="adjustResize" />
